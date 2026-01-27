@@ -1,13 +1,17 @@
 // main.js
+// Additional reading on components via JS MDN:
+// https://developer.mozilla.org/en-US/docs/Web/API/Web_components
+
+// Also, additional reading on 'responsible' use of connectedCallback vs. e.g. constructor:
+// https://hawkticehurst.com/2023/11/you-are-probably-using-connectedcallback-wrong/
 
 // --------------------------------------------------
 // STEP 1: Import component modules so they register
 // --------------------------------------------------
 // TODO: Create these files in src/js/components/ and then uncomment imports.
-
 import './components/resource-header.js';
-import './components/resource-filters.js';
 import './components/resource-results.js';
+import './components/resource-filters.js';
 import './components/resource-details.js';
 
 // Optional stretch:

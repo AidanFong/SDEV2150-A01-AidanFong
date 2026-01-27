@@ -1,4 +1,6 @@
-        <section class="col-12 col-lg-4">
+const template = document.createElement("template");
+template.innerHTML = `
+    <section>
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
             <strong>Results</strong>
@@ -43,4 +45,15 @@
             </button>
             </div>
         </div>
-        </section>
+    </section>
+`
+
+class ResourceResults extends HTMLElement {
+    constructor() {
+        super();  // call the constructor of the base/parent class, i.e. HTMLElement
+        this.attachShadow({ mode: "open" });
+        this.shadowRoot.appendChild(template.content.cloneNode(true));
+    }
+}
+
+customElements.define('resource-results', ResourceResults);
