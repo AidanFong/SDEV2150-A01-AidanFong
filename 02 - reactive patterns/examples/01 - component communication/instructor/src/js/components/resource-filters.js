@@ -1,9 +1,8 @@
-const template = document.createElement("template");
+const template = document.createElement('template');
 template.innerHTML = `
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
-
-  <aside>
-    <div class="card">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <aside class="h-100">
+    <div class="card h-100">
       <div class="card-header">
         <strong>Filters</strong>
       </div>
@@ -45,15 +44,21 @@ template.innerHTML = `
         </form>
       </div>
     </div>
-  </aside>
-`
+  </aside>`;
 
 class ResourceFilters extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
+  }
+
+  connectedCallback() {
+    this.render();
+  }
+
+  render() {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
 
-customElements.define("resource-filters", ResourceFilters);
+customElements.define('resource-filters', ResourceFilters);

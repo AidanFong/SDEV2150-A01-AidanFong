@@ -1,5 +1,7 @@
 const template = document.createElement("template");
 template.innerHTML = `
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+
     <header class="mb-4">
         <div class="d-flex flex-wrap justify-content-between align-items-end gap-2">
         <div>

@@ -1,5 +1,7 @@
 const template = document.createElement("template");
 template.innerHTML = `
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+
     <section>
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -14,7 +16,7 @@ template.innerHTML = `
                 <small>Academic</small>
                 </div>
                 <p class="mb-1 small text-body-secondary">Drop-in tutoring and study support.</p>
-                <small class="text-body-secondary">Building W, Room W101</small>
+                <small class="text-body-secondary"></small>
             </button>
 
             <button type="button" class="list-group-item list-group-item-action">
