@@ -52,13 +52,15 @@ const resultData = [
   },
 ];
 
+// Here, we'll place our logic layer, or "mailperson" - *outside of* component definition -
+// which will listen for the emitted click event, and pass on data to the detail component.
+
 // TODO: Pass data to resource-results component
 const resultsComponent = document.querySelector('resource-results');
-resultsComponent.results = resultData;
+resultsComponent.results = resultData;  // passes the data to ResourceResults.results setter, since we made the array itself private
 
 // TODO: Listen for resourceSelected event and update resource-details component
 const detailsComponent = document.querySelector('resource-details');
 resultsComponent.addEventListener('resource-selected', (event) => {
-  const { resource } = event.detail;
-  detailsComponent.resource = resource;
+  detailsComponent.resource = event.detail.result;
 });

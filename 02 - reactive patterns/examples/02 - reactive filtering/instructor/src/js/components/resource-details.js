@@ -1,8 +1,4 @@
-// Here, we'll simply display data - when we're finished writing it, note how it contains *no* logic
-// related to listening for / handling incoming events, etc. -- its job is ONLY to display stored data if that data exists!
-
 const template = document.createElement('template');
-// TODO: Update the template to support dynamic resource details
 template.innerHTML = `
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
   <section class="h-100">
@@ -22,7 +18,6 @@ template.innerHTML = `
   </section>`;
 
 class ResourceDetails extends HTMLElement {
-  // TODO: Create private field for resource data
   #resource = null;
 
   constructor() {
@@ -34,19 +29,16 @@ class ResourceDetails extends HTMLElement {
     this.render();
   }
 
-  // TODO: Implement setter for resource data, remember to render
   set resource(data) {
     this.#resource = data;
     this.render()
   }
 
   render() {
-    // TODO: Render resource details if available
-      this.shadowRoot.innerHTML = '';  // clear container before rendering so we don't double up its contents
+      this.shadowRoot.innerHTML = '';
       this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     if (this.#resource) {
-      // render out content if data exists
       const detailsContainer = document.createElement('div');
 
       detailsContainer.innerHTML = `
@@ -72,7 +64,6 @@ class ResourceDetails extends HTMLElement {
 
     } else {
 
-      // show default content otherwise
       this.shadowRoot.querySelector('.card-body').innerHTML = `
         <div class="list-group-item">
           <p class="mb-0">Please select a result to view details.</p>
