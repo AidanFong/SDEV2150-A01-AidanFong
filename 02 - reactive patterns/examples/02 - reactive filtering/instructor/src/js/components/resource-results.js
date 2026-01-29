@@ -16,17 +16,16 @@ template.innerHTML = `
     </div>
   </section>`;
 
+// Step 3: ResourceResults should react to received filter state
 class ResourceResults extends HTMLElement {
-  #results = [];
 
   // If I'm filtering, I need 
   // - one place to load/store the *full* dataset of results, (already exists: #results)
+  #results = [];
   // - and another place to store the *filtered* dataset
-  // - this also means I have to render from the *filtered* dataset, not #results
+  #filteredResults = [];
+  #filters = {};
 
-  // I need a method for applying the filters to the results
-
-  // I need to modify my render method accordingly
 
   constructor() {
     super();
@@ -37,6 +36,26 @@ class ResourceResults extends HTMLElement {
   set results(data) {
     this.#results = data;
     this.render();
+  }
+
+  set filters(incomingFilters) {
+    // If I have a private array, I need a setter for it
+    this.#filters = {
+      // Writing the values might be more complicated than I ancitipate,
+      // so I'll leave that for now.
+    }
+    
+    // After I set/store the incoming filter inputs, I know I need to apply them.
+    this.#applyFilters()
+  }
+
+  #applyFilters() {
+    // This will be its own method, because I can anticipate the logic being extensive. 
+
+    // I *definitely* don't want this method to be accessible externally, so it's #private too
+    // -> I only need to apply filters as a result of the setter receiving new data
+    
+    this.render(); // I already know I'll need to re-render, because I'm changing the data displayed by the UI
   }
 
   _handleResultClick(event) {
@@ -71,6 +90,7 @@ class ResourceResults extends HTMLElement {
   }
   
   render() {
+  // - I have to render from the *filtered* dataset, not #results
     const content = template.content.cloneNode(true)
     const listGroup = content.querySelector('.list-group');
 
@@ -88,7 +108,7 @@ class ResourceResults extends HTMLElement {
         </button>`
       ); 
 
-      listGroup.innerHTML = resultsHTML.join(''); // resultsHTML is an array, so combine each HTML blob back-to-back into a string
+      listGroup.innerHTML = resultsHTML.join('');
 
     } else {
       listGroup.innerHTML = `

@@ -47,30 +47,47 @@ template.innerHTML = `
     </div>
   </aside>`;
 
+
+// Step 2: work on ResourceFilters component
 class ResourceFilters extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    // Bind method to instance -> see again: https://dev.to/aman_singh/why-do-we-need-to-bind-methods-inside-our-class-component-s-constructor-45bn
+    // Next time, we'll just use arrow functions ;)
+    this._handleSubmit = this._handleSubmit.bind(this);
+    this._handleCategoryClick = this._handleCategoryClick.bind(this);
   }
 
   connectedCallback() {
     // I'm going to want All items selected by default.
+    // If I want UI input to trigger events firing from this UI component,
+    // I'll need event listeners for those inputs.
     this.render();
+  }
+
+  disconnectedCallback() {
+    // If I'm setting up event listeners when the component loads/attaches into the DOM (^ connectedCallback),
+    // I should clean up those event listeners if/when the component ever unloads (disconnectedCallback)
   }
 
   // Handle:
 
   // place/bind functions below as necessary (e.g. in constructor, connectedCallback, disconnectedCallback, etc.)
 
-  // - clicking categories (in this example, will trigger changes live, without clicking Filter)
-  //      - change click state of category button
-  //      - create & fire an event for category click
+  _handleCategoryClick(event) {
+    // - clicking categories (in this example, will trigger changes live, without clicking Filter)
+    //      - change click state of category button
+    //      - create & fire an event for category click
+  }
 
-  // - clicking submission
-
-  // - submitting the filters to trigger an event and send a message
-  //      - build an object to hold the filter state
-  //      - create & fire a custom event that fires with that information
+  _handleSubmit(event) {
+    event.preventDefault(); // If I'm handling form submission with JS, I already know I need to prevent default form submission behaviour
+    
+    // - submitting the filters to trigger an event and send a message
+    //      - build an object to hold the filter state
+    //      - create & fire a custom event that fires with that information
+  }
 
   render() {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
