@@ -53,40 +53,54 @@ class ResourceFilters extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    // Bind method to instance -> see again: https://dev.to/aman_singh/why-do-we-need-to-bind-methods-inside-our-class-component-s-constructor-45bn
-    // Next time, we'll just use arrow functions ;)
+
     this._handleSubmit = this._handleSubmit.bind(this);
     this._handleCategoryClick = this._handleCategoryClick.bind(this);
   }
 
   connectedCallback() {
-    // I'm going to want All items selected by default.
-    // If I want UI input to trigger events firing from this UI component,
-    // I'll need event listeners for those inputs.
+    // life cycle: We can't listen for events until the component loads into the DOM, so they go in here!
+    this._form = this.shadowRoot.querySelector('#frm-filter');
+    this._form.addEventListener('submit', this._handleSubmit);
+
+    this._categoryGroup = this.shadowRoot.querySelector('aria-label="Category filters"') // aria-label is its uniquely identifying attribute
+    this._categoryGroup.addEventListener('click', this._handleCategoryClick);
+
     this.render();
   }
 
   disconnectedCallback() {
-    // If I'm setting up event listeners when the component loads/attaches into the DOM (^ connectedCallback),
-    // I should clean up those event listeners if/when the component ever unloads (disconnectedCallback)
+    // life cycle: If you set up event listeners on load or (not in this example) on attribute change, clean 'em up!
+    if (this._form) {
+      this._form.removeEventListener('submit', this._handleSubmit);
+    }
+    if (this._categoryGroup) {
+      this._categoryGroup.removeEventListener('click', this._handleCategoryClick);
+    }
   }
 
-  // Handle:
-
-  // place/bind functions below as necessary (e.g. in constructor, connectedCallback, disconnectedCallback, etc.)
 
   _handleCategoryClick(event) {
-    // - clicking categories (in this example, will trigger changes live, without clicking Filter)
-    //      - change click state of category button
-    //      - create & fire an event for category click
+    // I messed up earlier: we'll just use this to change visual state of clicked category button
   }
 
   _handleSubmit(event) {
-    event.preventDefault(); // If I'm handling form submission with JS, I already know I need to prevent default form submission behaviour
-    
-    // - submitting the filters to trigger an event and send a message
-    //      - build an object to hold the filter state
-    //      - create & fire a custom event that fires with that information
+    event.preventDefault();
+    // I'll need to collect data to pack into the filters object; let's get the skeleton out of the way first
+    const filters = {
+      // data elements go here, once I've extracted input values from the DOM
+    };
+
+    const filtersEvent = new CustomEvent(
+      'resource-filters-changed',
+      {
+        details: filters,
+        bubbles: true,
+        composed: true,
+      }
+    );
+
+    this.dispatchEvent(filtersEvent);
   }
 
   render() {
