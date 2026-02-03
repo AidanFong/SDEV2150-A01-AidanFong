@@ -16,7 +16,8 @@ template.innerHTML = `
 
           <div class="mb-2"><strong>Category</strong></div>
           <div class="d-flex flex-wrap gap-2" aria-label="Category filters">
-            <button class="btn btn-sm btn-outline-primary" type="button">All</button>
+            <!-- TODO: Set active state on All category button -->
+            <button class="btn btn-sm btn-outline-primary active" type="button">All</button>
             <button class="btn btn-sm btn-outline-primary" type="button">Academic</button>
             <button class="btn btn-sm btn-outline-primary" type="button">Wellness</button>
             <button class="btn btn-sm btn-outline-primary" type="button">Financial</button>
@@ -38,6 +39,7 @@ template.innerHTML = `
           <hr class="my-3" />
 
           <div class="d-flex gap-2">
+            <!-- TODO: (Later) reset form and re-dispatch filter state -->
             <button class="btn btn-outline-secondary" type="button">Reset</button>
             <button class="btn btn-primary" type="submit">Filter</button>
           </div>
@@ -46,78 +48,72 @@ template.innerHTML = `
     </div>
   </aside>`;
 
-
 class ResourceFilters extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-
+    // TODO: Bind event handler methods
     this._handleSubmit = this._handleSubmit.bind(this);
     this._handleCategoryClick = this._handleCategoryClick.bind(this);
   }
 
   connectedCallback() {
     this.render();
-
-    // Trying to add event listeners before rendering the element to DOM won't work!
-    this._form = this.shadowRoot.querySelector('#frm-filter');
-    this._form.addEventListener('submit', this._handleSubmit);
-
-    this._categoryGroup = this.shadowRoot.querySelector('[aria-label="Category filters"]')
-    this._categoryGroup.addEventListener('click', this._handleCategoryClick);
+    // TODO: Add a submit listener to #frm-filter.
+    this._formEl = this.shadowRoot.querySelector('#frm-filter');
+    this._formEl.addEventListener('submit', this._handleSubmit);
+    // TODO: Add click listener to category buttons.
+    this._categoryGroupEl = this.shadowRoot.querySelector('[aria-label="Category filters"]');
+    this._categoryGroupEl.addEventListener('click', this._handleCategoryClick);
   }
 
+  // TODO: Manage lifecycle and events (i.e., connectedCallback, disconnectedCallback).
   disconnectedCallback() {
-    if (this._form) {
-      this._form.removeEventListener('submit', this._handleSubmit);
+    if (this._formEl) {
+      this._formEl.removeEventListener('submit', this._handleSubmit);
     }
-    if (this._categoryGroup) {
-      this._categoryGroup.removeEventListener('click', this._handleCategoryClick);
+    if (this._categoryGroupEl) {
+      this._categoryGroupEl.removeEventListener('click', this._handleCategoryClick);
     }
   }
 
-  _handleCategoryClick(event) {
-    const button = event.target.closest('button');
-    if (!button || !this._categoryGroup.contains(button)) {
-      return;
-    }
-
-    const activeButton = this._categoryGroup.querySelector('.active');
-    if (activeButton && activeButton !== button) {
-      activeButton.classList.remove('active');
-    }
-
-    button.classList.add('active');
-  }
-
+  // Step 2: Create submit handler method.
   _handleSubmit(event) {
     event.preventDefault();
-
-    const searchQuery = this.shadowRoot.querySelector('#q').value.trim();
-    const categoryGroup = this.shadowRoot.querySelector('[aria-label="Category filters"]')
+    // TODO: Build a filters object: { query, category, openNow, virtual }.
+    const query = this.shadowRoot.querySelector('#q').value.trim();
+    const categoryGroup = this.shadowRoot.querySelector('[aria-label="Category filters"]');
     const categoryButton = categoryGroup.querySelector('.active') || categoryGroup.querySelector('button');
-    const category = categoryButton ? categoryButton.textContent.trim().toLowerCase() : 'all'
+    const category = categoryButton ? categoryButton.textContent.trim().toLowerCase() : 'all';
     const openNow = this.shadowRoot.querySelector('#openNow').checked;
     const virtual = this.shadowRoot.querySelector('#virtual').checked;
-
     const filters = {
-      searchQuery,
+      query,
       category,
       openNow,
       virtual,
     };
-
-    const filtersEvent = new CustomEvent(
-      'resource-filters-changed',
-      {
-        detail: filters,
-        bubbles: true,
-        composed: true,
-      }
-    );
-
+    // TODO: Dispatch a bubbling and composed CustomEvent('resource-filters-changed', { detail: filters }).
+    const filtersEvent = new CustomEvent('resource-filters-changed', {
+      detail: filters,
+      bubbles: true,
+      composed: true,
+    });
     this.dispatchEvent(filtersEvent);
-    // console.log(filtersEvent);
+  }
+
+  // TODO: Handle category button clicks to set active state.
+  _handleCategoryClick(event) {
+    const button = event.target.closest('button');
+    if (!button || !this._categoryGroupEl.contains(button)) {
+      return;
+    }
+
+    const activeButton = this._categoryGroupEl.querySelector('.active');
+    if (activeButton && activeButton !== button) {
+      activeButton.classList.remove('active');
+    }
+    button.classList.add('active');
   }
 
   render() {
