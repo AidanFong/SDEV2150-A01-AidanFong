@@ -36,6 +36,41 @@ class ResourceResults extends HTMLElement {
 
   // TODO: Stage 2: Observe the `source` attribute
 
+  // how would I use this pattern for populating data?
+  static get observedAttributes() {
+    // this built-in method determines which component props to monitor
+    return ['source'];
+  }
+
+  attributeChangedCallback(name, oldVal, newVal) {  // default input params for this HTMLElement callback function
+    // a) ensure the attr changed is 'source' (in more complex cases, we might be monitoring multiple attributes)
+    // b) don't re-fetch data if the source URL didn't change
+    if (name === 'source' && oldVal != newVal) {
+      // check if component is connected: https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected
+      if (this.isConnected) {
+        this.#fetchData(newVal);
+      }
+    }
+  }
+
+  // TODO: Stage 2: Private method to fetch data from the provided source URL
+
+
+  async #fetchData(url) {
+    try {
+      const response = await fetch(url);
+      // response.ok is a boolean: HTTP Response status code is 200, i.e. request successfully fulfilled
+      if (!response.ok) {
+        throw new Error(`Network response failed: ${response.statusText}`);
+      }
+      // if response status code *was* OK (i.e. 200), we can retrieve our data from it:
+      const data = await response.json();
+      this.results = data; // note: we're using this.results, not this.#results — why do you think that is?
+    } catch (error) {
+      console.error('Failed to get data: ', error);
+    }
+  }
+
   set results(data) {
     this.#results = data;
     this.#filteredResults = [...data];
@@ -50,13 +85,7 @@ class ResourceResults extends HTMLElement {
     this.#applyFilters();
   }
 
-  // TODO: Stage 2: Private method to fetch data from the provided source URL
 
-  // TODO: Stage 2: When `source` changes:
-  // - Avoid refetching if the value is unchanged
-  // - fetch(source)
-  // - handle loading and error states
-  // - set results with fetched data
 
   _handleResultClick(event) {
     const button = event.target.closest('button[data-id]');
@@ -128,7 +157,7 @@ class ResourceResults extends HTMLElement {
   render() {
     const content = template.content.cloneNode(true);
 
-    // TODO: Stage 2: Render loading and error states before results when fetching asynchronously
+    // Already done: Stage 2: Render loading and error states before results when fetching asynchronously
     if (this.#filteredResults.length) {
       // Generate the list of results to display
       const resultsHtml = this.#filteredResults.map(result => `<button type="button" class="list-group-item list-group-item-action" data-id="${result.id}">
